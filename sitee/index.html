@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Али Азамжанов — Frontend</title>
+  <!-- Шрифт (если не загрузится — будет системный) -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root{
+      --bg-dark:#0a0a0a;
+      --tiffany:#00e5d8;
+      --tiffany-2:#00c9bf;
+      --text:#e9fefc;
+      --muted:#bfecea;
+      --glass:rgba(0,0,0,0.45);
+      --glass-2:rgba(0,0,0,0.6);
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+      --radius:22px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:
+        linear-gradient(rgba(0,0,0,.65), rgba(0,0,0,.65)),
+        url("https://images.unsplash.com/photo-1598133894003-b9d7a3a3ecaf?q=80&w=1920&auto=format&fit=crop")
+        center/cover fixed no-repeat;
+      /* мягкое «дыхание» фона */
+      animation: bg-pan 18s ease-in-out infinite;
+      scroll-behavior:smooth;
+      overflow-x:hidden;
+    }
+    @keyframes bg-pan{
+      0%   {background-position: 50% 50%}
+      50%  {background-position: 48% 55%}
+      100% {background-position: 50% 50%}
+    }
+
+    /* Навбар */
+    .nav{
+      position:sticky; top:0; z-index:5;
+      backdrop-filter:saturate(120%) blur(8px);
+      background:linear-gradient( to bottom, var(--glass), transparent);
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .nav .wrap{
+      max-width:1080px; margin:0 auto; padding:14px 18px;
+      display:flex; align-items:center; justify-content:space-between;
+    }
+    .logo{font-weight:700; letter-spacing:.5px}
+    .logo span{ color:var(--tiffany); }
+    .nav a{
+      color:var(--text); text-decoration:none; font-weight:500; opacity:.9;
+    }
+    .nav ul{list-style:none; display:flex; gap:22px; padding:0; margin:0}
+    .nav a:hover{color:var(--tiffany)}
+
+    /* Общие секции */
+    .section{
+      min-height:100svh; display:grid; place-items:center;
+      padding:96px 18px 72px;
+    }
+    .card{
+      width:min(940px,100%);
+      background:linear-gradient( to bottom right, var(--glass-2), rgba(0,0,0,.35));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding:28px;
+      backdrop-filter:saturate(120%) blur(10px);
+      transform:translateY(10px);
+      opacity:0;
+      transition:transform .9s ease, opacity .9s ease, box-shadow .3s ease;
+    }
+    .card.visible{transform:translateY(0); opacity:1}
+
+    h1{font-size:clamp(28px,5vw,46px); margin:8px 0 6px; line-height:1.1}
+    h2{font-size:clamp(22px,4vw,30px); margin:0 0 12px; color:var(--tiffany)}
+    .muted{color:var(--muted)}
+    .lead{font-size:clamp(16px,2.3vw,20px); color:#eafdfb; opacity:.95}
+
+    /* Кнопки */
+    .btn{
+      position:relative; display:inline-flex; align-items:center; gap:10px;
+      padding:12px 18px; border-radius:999px; font-weight:700;
+      background:linear-gradient(90deg,var(--tiffany),var(--tiffany-2));
+      color:#001616; text-decoration:none; border:none; cursor:pointer;
+      box-shadow:0 8px 20px rgba(0,229,216,.25);
+      transition:transform .15s ease, box-shadow .2s ease, filter .2s ease;
+      overflow:hidden; will-change:transform;
+    }
+    .btn:hover{ transform:translateY(-1px); box-shadow:0 10px 24px rgba(0,229,216,.3) }
+    .btn:active{ transform:translateY(0) scale(.98) }
+    /* ripple */
+    .ripple{
+      position:absolute; border-radius:999px; inset:auto;
+      width:10px; height:10px; pointer-events:none;
+      background:rgba(255,255,255,.5); transform:translate(-50%,-50%) scale(0);
+      animation:ripple .6s ease-out forwards;
+      mix-blend-mode:screen;
+    }
+    @keyframes ripple{to{transform:translate(-50%,-50%) scale(16); opacity:0}}
+
+    /* Соц-иконки */
+    .socials{ display:flex; flex-wrap:wrap; gap:14px }
+    .icon-btn{
+      --size:48px;
+      width:var(--size); height:var(--size);
+      display:grid; place-items:center;
+      border-radius:14px; background:rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+      transition:transform .15s ease, background .25s ease, border-color .25s ease;
+      text-decoration:none; color:var(--text);
+    }
+    .icon-btn:hover{ transform:translateY(-2px); background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.18) }
+    .icon{width:22px; height:22px; display:block}
+
+    /* Сетка главного экрана */
+    .hero{
+      display:grid; grid-template-columns:1.1fr .9fr; gap:24px; align-items:center;
+    }
+    .hero .left{ text-align:left }
+    .hero .right{
+      justify-self:end; display:grid; gap:12px;
+    }
+
+    /* Обо мне */
+    .about p{ line-height:1.7; margin:0; }
+
+    /* Контакты */
+    .contacts .grid{
+      display:grid; grid-template-columns:1fr; gap:16px;
+    }
+    .contacts .row{ display:flex; align-items:center; gap:12px }
+
+    /* Небольшая «сеточка» подсветки фона */
+    .mesh{
+      position:fixed; inset:0; pointer-events:none; z-index:0;
+      background:
+        radial-gradient(600px 200px at 20% 10%, rgba(0,229,216,.08), transparent 60%),
+        radial-gradient(500px 220px at 85% 20%, rgba(0,229,216,.06), transparent 60%),
+        radial-gradient(400px 180px at 50% 85%, rgba(0,229,216,.05), transparent 60%);
+      filter: blur(10px) saturate(120%);
+    }
+
+    /* Адаптив */
+    @media (max-width:900px){
+      .hero{ grid-template-columns:1fr; }
+      .hero .right{ justify-self:start }
+      .nav .wrap{ gap:14px }
+      .nav ul{ gap:14px; flex-wrap:wrap }
+    }
+
+    /* Respect prefers-reduced-motion */
+    @media (prefers-reduced-motion:reduce){
+      *{animation:none!important; transition:none!important}
+    }
+  </style>
+</head>
+<body>
+  <!-- SVG-иконки (встроенные, без внешних скриптов) -->
+  <svg width="0" height="0" style="position:absolute">
+    <symbol id="ico-telegram" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M9.03 16.88c-.39 0-.32-.15-.46-.51L7.5 12.63l8.7-5.48.99.26-1.23 12.17-6.93-2.7zM9.5 13.9l.02 2.72c.36 0 .52-.16.72-.35l1.73-1.64 3.59 2.8c.66.36 1.13.17 1.3-.61l2.36-11.1c.24-1.14-.41-1.58-1.15-1.3L3.6 9.2c-1.1.44-1.08 1.06-.19 1.34l4.38 1.37 10.16-6.4-8.45 7.22z"/>
+    </symbol>
+    <symbol id="ico-github" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.49v-1.7c-2.78.6-3.37-1.19-3.37-1.19-.45-1.14-1.1-1.45-1.1-1.45-.9-.62.07-.61.07-.61 1 .07 1.52 1.03 1.52 1.03.89 1.52 2.33 1.08 2.9.83.09-.65.35-1.08.63-1.33-2.22-.25-4.56-1.11-4.56-4.95 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02A9.6 9.6 0 0 1 12 6.8c.85 0 1.7.11 2.5.32 1.9-1.29 2.74-1.02 2.74-1.02.55 1.38.2 2.4.11 2.65.64.7 1.03 1.58 1.03 2.68 0 3.85-2.35 4.7-4.58 4.95.36.31.69.92.69 1.86v2.75c0 .27.18.59.68.49A10 10 0 0 0 12 2z"/>
+    </symbol>
+    <symbol id="ico-instagram" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm5 3.5A5.5 5.5 0 1 1 6.5 13 5.5 5.5 0 0 1 12 7.5zm0 2A3.5 3.5 0 1 0 15.5 13 3.5 3.5 0 0 0 12 9.5zM18 6.25a1.25 1.25 0 1 1-1.25 1.25A1.25 1.25 0 0 1 18 6.25z"/>
+    </symbol>
+    <symbol id="ico-phone" viewBox="0 0 24 24">
+      <path fill="currentColor" d="M6.6 10.8a15.05 15.05 0 0 0 6.6 6.6l2.2-2.2a1 1 0 0 1 1.02-.24c1.12.37 2.33.56 3.58.56a1 1 0 0 1 1 1V20a2 2 0 0 1-2 2C9.61 22 2 14.39 2 5a2 2 0 0 1 2-2h3.52a1 1 0 0 1 1 1c0 1.25.19 2.46.56 3.58a1 1 0 0 1-.24 1.02L6.6 10.8z"/>
+    </symbol>
+  </svg>
+
+  <!-- Навигация -->
+  <div class="nav">
+    <div class="wrap">
+      <div class="logo">Ali<span>Dev</span></div>
+      <ul>
+        <li><a href="#home">Главная</a></li>
+        <li><a href="#about">Обо мне</a></li>
+        <li><a href="#contacts">Контакты</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Декоративная подсветка -->
+  <div class="mesh" aria-hidden="true"></div>
+
+  <!-- HERO -->
+  <section id="home" class="section">
+    <div class="card hero" data-reveal>
+      <div class="left">
+        <h1>Али Азамжанов</h1>
+        <p class="lead muted">Начинающий фронтенд-разработчик. Люблю чистый UI, скорость и эффектные мелочи.</p>
+        <div style="margin-top:16px; display:flex; gap:12px; flex-wrap:wrap">
+          <a class="btn" href="#contacts">Связаться</a>
+          <a class="btn" href="https://github.com/ali-azamzhanov" target="_blank" rel="noopener">GitHub</a>
+        </div>
+      </div>
+      <div class="right">
+        <div class="socials">
+          <a class="icon-btn" href="https://t.me/ali_real066" target="_blank" rel="noopener" title="Telegram">
+            <svg class="icon"><use href="#ico-telegram"/></svg>
+          </a>
+          <a class="icon-btn" href="https://github.com/ali-azamzhanov" target="_blank" rel="noopener" title="GitHub">
+            <svg class="icon"><use href="#ico-github"/></svg>
+          </a>
+          <a class="icon-btn" href="https://www.instagram.com/pahanchik.l7" target="_blank" rel="noopener" title="Instagram">
+            <svg class="icon"><use href="#ico-instagram"/></svg>
+          </a>
+          <a class="icon-btn" href="tel:+00000000000" title="Позвонить (замени номер)">
+            <svg class="icon"><use href="#ico-phone"/></svg>
+          </a>
+        </div>
+        <p class="muted" style="margin:6px 2px 0">* Замени номер в ссылке <code>tel:+00000000000</code></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ОБО МНЕ -->
+  <section id="about" class="section">
+    <div class="card about" data-reveal>
+      <h2>Обо мне</h2>
+      <p class="muted">
+        Учусь HTML, CSS, JavaScript. Стремлюсь делать адаптивные и быстрые интерфейсы с приятной анимацией.
+        Люблю минимализм, тёмные темы и акцентный цвет тиффани.
+      </p>
+    </div>
+  </section>
+
+  <!-- КОНТАКТЫ -->
+  <section id="contacts" class="section">
+    <div class="card contacts" data-reveal>
+      <h2>Контакты</h2>
+      <div class="grid">
+        <div class="row">
+          <a class="btn" href="https://t.me/ali_real066" target="_blank" rel="noopener">
+            <svg class="icon" style="margin-right:8px"><use href="#ico-telegram"/></svg>
+            Telegram
+          </a>
+          <a class="btn" href="https://github.com/ali-azamzhanov" target="_blank" rel="noopener">
+            <svg class="icon" style="margin-right:8px"><use href="#ico-github"/></svg>
+            GitHub
+          </a>
+          <a class="btn" href="https://www.instagram.com/pahanchik.l7" target="_blank" rel="noopener">
+            <svg class="icon" style="margin-right:8px"><use href="#ico-instagram"/></svg>
+            Instagram
+          </a>
+          <a class="btn" href="tel:+996999303181">
+            <svg class="icon" style="margin-right:8px"><use href="#ico-phone"/></svg>
+            Позвонить
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Появление карточек при скролле
+    const toReveal = document.querySelectorAll('[data-reveal]');
+    const onIntersect = (entries, obs) => {
+      entries.forEach(e=>{
+        if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); }
+      });
+    };
+    if('IntersectionObserver' in window){
+      const io = new IntersectionObserver(onIntersect,{threshold:.15});
+      toReveal.forEach(el=>io.observe(el));
+    } else {
+      // Фоллбек
+      toReveal.forEach(el=>el.classList.add('visible'));
+    }
+
+    // Ripple-эффект на .btn и .icon-btn
+    const rippleTargets = document.querySelectorAll('.btn, .icon-btn');
+    rippleTargets.forEach(el=>{
+      el.addEventListener('click', (ev)=>{
+        const r = document.createElement('span');
+        r.className = 'ripple';
+        const rect = el.getBoundingClientRect();
+        r.style.left = (ev.clientX - rect.left) + 'px';
+        r.style.top  = (ev.clientY - rect.top)  + 'px';
+        el.appendChild(r);
+        setTimeout(()=>r.remove(), 600);
+      });
+    });
+
+    // Небольшая защита от «белого экрана»: если картинка фона не загрузилась, зальём цветом
+    const testImg = new Image();
+    testImg.src = "https://images.unsplash.com/photo-1598133894003-b9d7a3a3ecaf?q=80&w=1920&auto=format&fit=crop";
+    testImg.onerror = () => {
+      document.body.style.background =
+        "linear-gradient(120deg, #0b0b0b, #131313 50%, #0b0b0b)"; // fallback
+    };
+  </script>
+</body>
+</html>
